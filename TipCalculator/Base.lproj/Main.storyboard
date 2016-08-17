@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="10117" systemVersion="15E65" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" initialViewController="Pwq-av-Joh">
+    <dependencies>
+        <deployment identifier="iOS"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="10085"/>
+    </dependencies>
+    <scenes>
+        <!--Calculator View Controller-->
+        <scene sceneID="BIm-Ue-bJ1">
+            <objects>
+                <viewController id="Pwq-av-Joh" customClass="CalculatorViewController" customModule="TipCalculator" customModuleProvider="target" sceneMemberID="viewController">
+                    <layoutGuides>
+                        <viewControllerLayoutGuide type="top" id="snk-Ix-ax9"/>
+                        <viewControllerLayoutGuide type="bottom" id="x51-XW-ihR"/>
+                    </layoutGuides>
+                    <view key="view" contentMode="scaleToFill" id="nor-J8-cVw">
+                        <rect key="frame" x="0.0" y="0.0" width="600" height="600"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <subviews>
+                            <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="DA2-42-MSJ" customClass="RangeSlider" customModule="TipCalculator" customModuleProvider="target">
+                                <rect key="frame" x="0.0" y="561" width="600" height="39"/>
+                                <subviews>
+                                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="1m6-dz-biH">
+                                        <rect key="frame" x="279" y="9" width="42" height="21"/>
+                                        <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
+                                        <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                                        <color key="textColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                                        <nil key="highlightedColor"/>
+                                    </label>
+                                </subviews>
+                                <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
+                                <constraints>
+                                    <constraint firstItem="1m6-dz-biH" firstAttribute="centerY" secondItem="DA2-42-MSJ" secondAttribute="centerY" id="jSH-50-jNX"/>
+                                    <constraint firstItem="1m6-dz-biH" firstAttribute="centerX" secondItem="DA2-42-MSJ" secondAttribute="centerX" id="r3v-kd-kB4"/>
+                                </constraints>
+                            </view>
+                        </subviews>
+                        <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                        <constraints>
+                            <constraint firstItem="DA2-42-MSJ" firstAttribute="leading" secondItem="nor-J8-cVw" secondAttribute="leading" id="6lS-kA-lWj"/>
+                            <constraint firstItem="DA2-42-MSJ" firstAttribute="top" secondItem="snk-Ix-ax9" secondAttribute="bottom" constant="541" id="O3C-da-H5n"/>
+                            <constraint firstItem="DA2-42-MSJ" firstAttribute="bottom" secondItem="x51-XW-ihR" secondAttribute="top" id="eHr-lH-4pA"/>
+                            <constraint firstAttribute="trailing" secondItem="DA2-42-MSJ" secondAttribute="trailing" id="oWJ-8P-8b3"/>
+                        </constraints>
+                    </view>
+                    <connections>
+                        <outlet property="percentageLabel" destination="1m6-dz-biH" id="uia-73-0bN"/>
+                        <outlet property="rangeSlider" destination="DA2-42-MSJ" id="YKJ-Cz-XR0"/>
+                    </connections>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="XHp-re-kWz" userLabel="First Responder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="394" y="227"/>
+        </scene>
+    </scenes>
+</document>
