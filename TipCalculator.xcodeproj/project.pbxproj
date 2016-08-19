@@ -11,6 +11,9 @@
 		10908B161D6525020079B8E0 /* CalculatorBrain.swift in Sources */ = {isa = PBXBuildFile; fileRef = 10908B151D6525020079B8E0 /* CalculatorBrain.swift */; };
 		10908B1E1D66766A0079B8E0 /* SettingsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 10908B1D1D66766A0079B8E0 /* SettingsViewController.swift */; };
 		10908B201D667B0E0079B8E0 /* TransitionManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 10908B1F1D667B0E0079B8E0 /* TransitionManager.swift */; };
+		10908B221D6697730079B8E0 /* RangeSlider.swift in Sources */ = {isa = PBXBuildFile; fileRef = 10908B211D6697730079B8E0 /* RangeSlider.swift */; };
+		10908B241D66A1130079B8E0 /* RangeSliderThumbLayer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 10908B231D66A1130079B8E0 /* RangeSliderThumbLayer.swift */; };
+		10908B261D66D0380079B8E0 /* RangeSliderTrackLayer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 10908B251D66D0380079B8E0 /* RangeSliderTrackLayer.swift */; };
 		10CD75C61D62FE6C003090D6 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 10CD75C51D62FE6C003090D6 /* AppDelegate.swift */; };
 		10CD75CB1D62FE6C003090D6 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 10CD75C91D62FE6C003090D6 /* Main.storyboard */; };
 		10CD75CD1D62FE6C003090D6 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 10CD75CC1D62FE6C003090D6 /* Assets.xcassets */; };
@@ -43,6 +46,9 @@
 		10908B151D6525020079B8E0 /* CalculatorBrain.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CalculatorBrain.swift; sourceTree = "<group>"; };
 		10908B1D1D66766A0079B8E0 /* SettingsViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SettingsViewController.swift; sourceTree = "<group>"; };
 		10908B1F1D667B0E0079B8E0 /* TransitionManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TransitionManager.swift; sourceTree = "<group>"; };
+		10908B211D6697730079B8E0 /* RangeSlider.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RangeSlider.swift; sourceTree = "<group>"; };
+		10908B231D66A1130079B8E0 /* RangeSliderThumbLayer.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RangeSliderThumbLayer.swift; sourceTree = "<group>"; };
+		10908B251D66D0380079B8E0 /* RangeSliderTrackLayer.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RangeSliderTrackLayer.swift; sourceTree = "<group>"; };
 		10CD75C21D62FE6C003090D6 /* TipCalculator.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = TipCalculator.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		10CD75C51D62FE6C003090D6 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		10CD75CA1D62FE6C003090D6 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
@@ -95,6 +101,9 @@
 		10908B181D65A0000079B8E0 /* View */ = {
 			isa = PBXGroup;
 			children = (
+				10908B231D66A1130079B8E0 /* RangeSliderThumbLayer.swift */,
+				10908B251D66D0380079B8E0 /* RangeSliderTrackLayer.swift */,
+				10908B211D6697730079B8E0 /* RangeSlider.swift */,
 				10CD75F51D62FF7A003090D6 /* Colors.swift */,
 				10908B131D646A5B0079B8E0 /* SliderView.swift */,
 			);
@@ -308,8 +317,11 @@
 			files = (
 				10CD75F41D62FEAC003090D6 /* CalculatorViewController.swift in Sources */,
 				10908B141D646A5B0079B8E0 /* SliderView.swift in Sources */,
+				10908B241D66A1130079B8E0 /* RangeSliderThumbLayer.swift in Sources */,
 				10908B201D667B0E0079B8E0 /* TransitionManager.swift in Sources */,
 				10CD75F61D62FF7A003090D6 /* Colors.swift in Sources */,
+				10908B221D6697730079B8E0 /* RangeSlider.swift in Sources */,
+				10908B261D66D0380079B8E0 /* RangeSliderTrackLayer.swift in Sources */,
 				10908B161D6525020079B8E0 /* CalculatorBrain.swift in Sources */,
 				10CD75C61D62FE6C003090D6 /* AppDelegate.swift in Sources */,
 				10908B1E1D66766A0079B8E0 /* SettingsViewController.swift in Sources */,

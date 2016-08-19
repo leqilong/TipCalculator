@@ -19,6 +19,7 @@ class CalculatorViewController: UIViewController, SliderViewDelegate, UITextFiel
     var tipCalculator = CalculatorBrain(amountBeforeTax: 0.0, tipPercentage: 0.0)
     var percent: Float = 0
     
+    
     let transitionManager = TransitionManager()
     
     override func viewDidLoad() {

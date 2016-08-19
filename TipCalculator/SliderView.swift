@@ -14,7 +14,7 @@ protocol SliderViewDelegate: class{
 
 @IBDesignable
 
-class SliderView: UIView{
+class SliderView: UIView, SettingsViewControllerDelegate{
     
     let lineWidth: CGFloat = 3
     
@@ -22,10 +22,11 @@ class SliderView: UIView{
     
     weak var delegate: SliderViewDelegate?
     
+    var maxPercent: CGFloat = 75
     
     var percent: CGFloat = 0{
         didSet{
-            percent = min(max(percent, 0), 75)
+            percent = min(max(percent, 0), maxPercent)
             print("percent is \(percent)")
             percentageLabel.text = "\(Int(percent))%"
             delegate?.updateLabel(percent)
@@ -94,4 +95,11 @@ class SliderView: UIView{
             backgroundLayer.frame = self.superview!.frame
             superview!.layer.replaceSublayer(superview!.layer.sublayers![0], with: backgroundLayer)
     }
+    
+    func updateMinMaxValue(lowerValue: Double?, upperValue: Double?){
+        print("updateMinMaxValue called!!!")
+        percent = CGFloat(lowerValue!)
+        maxPercent = CGFloat(upperValue!)
+    }
+
 }
