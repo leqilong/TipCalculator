@@ -8,9 +8,6 @@
 
 import UIKit
 
-protocol SettingsViewControllerDelegate{
-    func updateMinMaxValue(lowerValue: Double?, upperValue: Double?)
-}
 
 class SettingsViewController: UIViewController{
     
@@ -19,12 +16,33 @@ class SettingsViewController: UIViewController{
     
     //MARK: -Properties
     let rangeSlider = RangeSlider(frame: CGRectZero)
-    var delegate: SettingsViewControllerDelegate?
+    
+    var hasResult = false 
+    var totalAmount: Float?
+    var tipAmount: Float?
+    var partySize: Int?
+    var individualAmount: Int?
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        configureUI()
         view.addSubview(rangeSlider)
+        
+        if let userSetUpperValue = NSUserDefaults.standardUserDefaults().valueForKey("upperValue") as? Double{
+            rangeSlider.upperValue = userSetUpperValue
+        }else{
+            NSUserDefaults.standardUserDefaults().setValue(rangeSlider.upperValue, forKey: "upperValue")
+            print("This is the first launch ever!")
+        }
+        
+        if let userSetLowerValue = NSUserDefaults.standardUserDefaults().valueForKey("lowerValue") as? Double{
+            rangeSlider.lowerValue = userSetLowerValue
+        }else{
+            NSUserDefaults.standardUserDefaults().setValue(rangeSlider.lowerValue, forKey: "lowerValue")
+            print("This is the first launch!")
+        }
+        
+        configureUI()
+
     }
     
     
@@ -36,18 +54,30 @@ class SettingsViewController: UIViewController{
     }
     
     func configureUI(){
-        self.view.backgroundColor = UIColor(red:0.55, green:0.84, blue:0.56, alpha:1.0)
+        self.view.backgroundColor = UIColor(red:0.78, green:0.90, blue:0.85, alpha:1.0)
         rangeSlider.addTarget(self, action: "rangeSliderValueChanged:", forControlEvents: .ValueChanged)
         
         percentageSettingLabel.text = "Min Tip Percentage: \(Int((rangeSlider.lowerValue) * 100)) % Max Tip Percentage: \(Int((rangeSlider.upperValue) * 100)) %"
-        
     }
     
     func rangeSliderValueChanged(rangeSlider: RangeSlider) {
-//        print("Range slider value changed: (\(rangeSlider.lowerValue) \(rangeSlider.upperValue))")
-        
         percentageSettingLabel.text = "Min Tip Percentage: \(Int((rangeSlider.lowerValue) * 100)) % Max Tip Percentage: \(Int((rangeSlider.upperValue) * 100)) %"
         
-        delegate?.updateMinMaxValue((rangeSlider.lowerValue) * 100, upperValue: (rangeSlider.upperValue) * 100)
+        NSNotificationCenter.defaultCenter().postNotificationName("userSetMinMaxPercentChanged", object: nil, userInfo: ["lowerValue": ((rangeSlider.lowerValue) * 100), "upperValue": ((rangeSlider.upperValue) * 100)])
+        
+        NSUserDefaults.standardUserDefaults().setValue(rangeSlider.lowerValue, forKey: "lowerValue")
+        NSUserDefaults.standardUserDefaults().setValue(rangeSlider.upperValue, forKey: "upperValue")
+        
+    }
+
+    @IBAction func shareResults(sender: AnyObject) {
+        
+        let messageToSend = "Test Message"
+        
+        let activityViewController = UIActivityViewController(activityItems: [messageToSend], applicationActivities: nil)
+        
+        self.presentViewController(activityViewController, animated: true, completion: nil)
+
+        
     }
 }

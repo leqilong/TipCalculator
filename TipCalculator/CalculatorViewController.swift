@@ -18,28 +18,60 @@ class CalculatorViewController: UIViewController, SliderViewDelegate, UITextFiel
     @IBOutlet weak var amountPerPersonLabel: UILabel!
     var tipCalculator = CalculatorBrain(amountBeforeTax: 0.0, tipPercentage: 0.0)
     var percent: Float = 0
-    
+    var sliderViewFrameOriginY: CGFloat = 0
+    var billDict: [String:AnyObject] = [:]
     
     let transitionManager = TransitionManager()
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        
+        if let dict = NSUserDefaults.standardUserDefaults().objectForKey("billDict") as? [String:AnyObject]{
+            if let amountBeforeTip = dict["amountBeforeTip"]{
+                billTextField.text = "\(amountBeforeTip)"
+            }
+            if let peopleAmount = dict["peopleAmount"]{
+                peopleAmountTextField.text = "\(peopleAmount)"
+            }
+            
+            if let tipPercent = dict["tipPercent"]{
+                percent = Float(tipPercent as! NSNumber)
+            }
+        }else{
+            NSUserDefaults.standardUserDefaults().setObject(billDict, forKey: "billDict")
+            print("This is the first launch ever!")
+        }
+        
+
         configureUI()
         refresh()
         
-        let sliderView = SliderView (origin: CGPointMake(0.0, self.view.frame.maxY - 50.0), height: 50.0, width: self.view.frame.maxX)
+        if let sliderViewFrameY = NSUserDefaults.standardUserDefaults().valueForKey("sliderViewHeight") as? CGFloat{
+            let sliderView = SliderView (origin: CGPointMake(0.0, /*self.view.frame.maxY - sliderViewFrameY - 150.00*/sliderViewFrameY), height: 50.0, width: self.view.frame.maxX)
+            sliderView.delegate = self
+            self.view.addSubview(sliderView)
+        }else{
+            let sliderView = SliderView (origin: CGPointMake(0.0, self.view.frame.maxY - 50.0), height: 50.0, width: self.view.frame.maxX)
+            NSUserDefaults.standardUserDefaults().setValue(sliderViewFrameOriginY, forKey: "sliderViewHeight")
+            sliderView.delegate = self
+            self.view.addSubview(sliderView)
+        }
         
-        sliderView.delegate = self
         billTextField.delegate = self
         peopleAmountTextField.delegate = self
+    }
+    
+    
+    override func viewWillDisappear(animated: Bool) {
+        billDict["amountBeforeTip"] = Float(billTextField.text!)
+        NSUserDefaults.standardUserDefaults().setObject(billDict, forKey: "billDict")
         
-        self.view.addSubview(sliderView)
+        billDict["peopleAmount"] = Int(peopleAmountTextField.text!)
+        NSUserDefaults.standardUserDefaults().setObject(billDict, forKey: "billDict")
         
+        billDict["tipPercent"] = self.percent
+        NSUserDefaults.standardUserDefaults().setObject(billDict, forKey: "billDict")
 
-//        let panRec = UIPanGestureRecognizer()
-//        panRec.addTarget(self, action: "changeHeight:")
-//        sliderView.addGestureRecognizer(panRec)
-//        sliderView.userInteractionEnabled = true
     }
     
     var percentage: CGFloat = 0 {
@@ -49,42 +81,9 @@ class CalculatorViewController: UIViewController, SliderViewDelegate, UITextFiel
             //updatePercentageLabel()
         }
     }
-
-    func updatePercentageLabel(){
-        //percentageLabel.frame.origin.y = view.frame.maxY - percentage
-        //print("percentageLabel.frame.origin.y  is \(percentageLabel.frame.origin.y)")
-        //percentageLabel.text = "\(Int(percentage))%"
-    }
     
-//    func changeHeight(sender: UIPanGestureRecognizer) {
-//        print("changeHeight called!")
-//        switch sender.state{
-//        case .Ended: fallthrough
-//        case .Changed:
-//            let translation = sender.translationInView(self.view)
-//            if let slider = sender.view{
-////                dispatch_async(dispatch_get_main_queue()){
-////                    slider.frame.origin = CGPointMake(slider.frame.origin.x, max(min(slider.frame.origin.y + translation.y, (self.view.bounds.size.height - slider.frame.height)), self.view.frame.origin.y))
-////                    slider.setNeedsDisplay()
-////                }
-//                let heightChange = -translation.y
-//                if heightChange != 0{
-//                    print("translation.y is \(translation.y)")
-//                    self.percentage = self.percentage + heightChange/6
-//                    self.percentageLabel.text = "\(Int(self.percentage))%"
-//                    sender.setTranslation(CGPointZero, inView: self.view)
-//                }
-//            }
-//            
-//        default:
-//            break
-//        }
-//    }
-//    
     func configureUI(){
-        totalBillLabel.text = "0.0"
-        totalTipLabel.text = "0.0"
-        amountPerPersonLabel.text = "0.0"
+        calculateTip()
     }
     
     func calculateTip(){
@@ -92,25 +91,29 @@ class CalculatorViewController: UIViewController, SliderViewDelegate, UITextFiel
         tipCalculator.tipPercentage = Float(percent/100)
         if peopleAmountTextField.text != ""{
             tipCalculator.peopleAmount = ((peopleAmountTextField.text)! as NSString).integerValue
+            if tipCalculator.peopleAmount == 0 {
+                tipCalculator.peopleAmount = 1
+            }
         }
-        print("tipCalculator.peopleAmount is \(tipCalculator.peopleAmount)!!")
         tipCalculator.calculateTip()
         
         updateAmount()
 
     }
     
-    func updateLabel(percent: CGFloat?){
+    func updateLabel(percent: CGFloat?, currentFrameOriginYOnSuperView: CGFloat?) {
         if let percent = percent{
-            
             self.percent = Float(percent)
-//            tipCalculator.amountBeforeTax = ((billTextField.text)! as NSString).floatValue
-//            tipCalculator.tipPercentage = Float(percent/100)
-//            tipCalculator.calculateTip()
-//            
-//            updateAmount()
+            billDict["tipPercent"] = self.percent
+            NSUserDefaults.standardUserDefaults().setObject(billDict, forKey: "billDict")
             calculateTip()
         }
+        
+        if let currentFrameOriginYOnSuperView = currentFrameOriginYOnSuperView{
+            self.sliderViewFrameOriginY = currentFrameOriginYOnSuperView
+            NSUserDefaults.standardUserDefaults().setValue(sliderViewFrameOriginY, forKey: "sliderViewHeight")
+        }
+        
     }
     
     func updateAmount(){
@@ -134,6 +137,14 @@ class CalculatorViewController: UIViewController, SliderViewDelegate, UITextFiel
     @IBAction func billBeforeTaxValueChanged(sender: AnyObject) {
         
         print("billBeforeTaxValueChanged!!!")
+        
+        billDict["amountBeforeTip"] = Float(billTextField.text!)
+        NSUserDefaults.standardUserDefaults().setObject(billDict, forKey: "billDict")
+        
+        billDict["peopleAmount"] = Int(peopleAmountTextField.text!)
+        NSUserDefaults.standardUserDefaults().setObject(billDict, forKey: "billDict")
+
+        
         calculateTip()
         
     }

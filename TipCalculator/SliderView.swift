@@ -9,12 +9,12 @@
 import UIKit
 
 protocol SliderViewDelegate: class{
-    func updateLabel(percent: CGFloat?)
+    func updateLabel(percent: CGFloat?, currentFrameOriginYOnSuperView: CGFloat?)
 }
 
 @IBDesignable
 
-class SliderView: UIView, SettingsViewControllerDelegate{
+class SliderView: UIView{
     
     let lineWidth: CGFloat = 3
     
@@ -22,14 +22,31 @@ class SliderView: UIView, SettingsViewControllerDelegate{
     
     weak var delegate: SliderViewDelegate?
     
-    var maxPercent: CGFloat = 75
+    var maxPercent: CGFloat = 100
+    var minPercent: CGFloat = 0
+    var sliderHeight: CGFloat?
     
     var percent: CGFloat = 0{
         didSet{
-            percent = min(max(percent, 0), maxPercent)
+            percent = min(max(percent, minPercent), maxPercent)
             print("percent is \(percent)")
             percentageLabel.text = "\(Int(percent))%"
-            delegate?.updateLabel(percent)
+            delegate?.updateLabel(percent, currentFrameOriginYOnSuperView: currrentFrameOriginYOnSuperView)
+            currentPercent = percent
+            NSUserDefaults.standardUserDefaults().setValue(currentPercent, forKey: "currentPercent")
+        }
+    }
+    
+    var currrentFrameOriginYOnSuperView: CGFloat?
+    var currentPercent: CGFloat?
+    var percentDict: [String:AnyObject] = [
+        "maxPercent": 100,
+        "minPercent": 0
+    ]
+    
+    var backgroundColorPercent: CGFloat = 0{
+        didSet{
+            backgroundColorPercent = min(max(backgroundColorPercent, 0), 75)
         }
     }
 
@@ -39,13 +56,37 @@ class SliderView: UIView, SettingsViewControllerDelegate{
         super.init(frame: CGRectMake(0.0, 0.0, width, height))
         self.frame.origin = origin
         self.backgroundColor = UIColor.clearColor()
+        self.sliderHeight = height
         
-        percentageLabel.frame = CGRectMake(self.frame.width/3, 0, 60, self.frame.height)
+        percentageLabel.frame = CGRectMake(self.frame.width/4, 0, 60, self.frame.height)
         percentageLabel.backgroundColor = UIColor.clearColor()
         percentageLabel.textColor = UIColor.whiteColor()
         percentageLabel.textAlignment = NSTextAlignment.Center
-        percentageLabel.text = "\(percent)%"
+        
+        if let percentDictionary = NSUserDefaults.standardUserDefaults().objectForKey("percentDict") as? [String:AnyObject]{
+            if let max = percentDictionary["maxPercent"] as? CGFloat{
+                maxPercent = max
+            }
+            
+            if let min = percentDictionary["minPercent"] as? CGFloat{
+                minPercent = min
+            }
+        }else{
+            NSUserDefaults.standardUserDefaults().setObject(percentDict, forKey: "percentDict")
+            print("This is the first launch ever!")
+        }
+        
+        if let current = NSUserDefaults.standardUserDefaults().valueForKey("currentPercent") as? CGFloat{
+            percent = current
+        }else{
+            NSUserDefaults.standardUserDefaults().setValue(currentPercent, forKey: "currentPercent")
+            print("This is the first launch ever!")
+        }
+        
+        percentageLabel.text = "\(Int(percent))%"
         self.addSubview(percentageLabel)
+        
+        NSNotificationCenter.defaultCenter().addObserver(self, selector: "receiveNewMinMaxPercent:", name: "userSetMinMaxPercentChanged", object: nil)
 
         initGestureRecognizers()
     }
@@ -74,15 +115,21 @@ class SliderView: UIView, SettingsViewControllerDelegate{
         
         self.superview!.bringSubviewToFront(self)
         
-        var translation = panGR.translationInView(self)
+        let location = panGR.locationInView(self)
         
-        self.frame.origin = CGPointMake(self.frame.origin.x, max(min(self.frame.origin.y + translation.y, (self.superview!.bounds.size.height - self.frame.height)), self.superview!.frame.origin.y))
+        self.frame.origin = CGPointMake(self.frame.origin.x, max(min(self.frame.origin.y + location.y, (self.superview!.bounds.size.height - self.frame.height)), self.superview!.frame.origin.y))
         
-        let heightChange = -translation.y
+        currrentFrameOriginYOnSuperView = self.frame.origin.y
+        print("currrentFrameOriginYOnSuperView is \(currrentFrameOriginYOnSuperView)!!!!")
+        
+        let heightChange = -location.y
         if heightChange != 0{
-            print("translation.y is \(translation.y)")
-            percent = percent + heightChange/7
+            print("translation.y is \(location.y)")
+            percent = percent + (heightChange * ((maxPercent - minPercent)/100) / 5)
+            backgroundColorPercent = backgroundColorPercent + (heightChange / (((100 - (maxPercent - minPercent))/25)+6))
+            print("HeightChange is \(heightChange/(((100 - (maxPercent - minPercent))/25)+6))!!!!!")
             updateBackgroundColor()
+            delegate?.updateLabel(percent, currentFrameOriginYOnSuperView: currrentFrameOriginYOnSuperView)
         }
 
         
@@ -90,16 +137,36 @@ class SliderView: UIView, SettingsViewControllerDelegate{
     }
     
     func updateBackgroundColor(){
-            let colors = Colors(percent: percent)
-            var backgroundLayer = colors.gl
+            let colors = Colors(percent: backgroundColorPercent)
+            let backgroundLayer = colors.gl
             backgroundLayer.frame = self.superview!.frame
             superview!.layer.replaceSublayer(superview!.layer.sublayers![0], with: backgroundLayer)
     }
     
-    func updateMinMaxValue(lowerValue: Double?, upperValue: Double?){
-        print("updateMinMaxValue called!!!")
-        percent = CGFloat(lowerValue!)
-        maxPercent = CGFloat(upperValue!)
+    
+    func receiveNewMinMaxPercent(notification: NSNotification){
+        
+        self.frame.origin.y = self.superview!.bounds.height - 50
+        
+        let dict = notification.userInfo
+        
+        if let newMinPercent = dict!["lowerValue"] as? CGFloat{
+            minPercent = newMinPercent
+            percent = minPercent
+            percentageLabel.text = "\(Int(minPercent))%"
+        }
+        if let newMaxPerCent = dict!["upperValue"] as? CGFloat{
+            maxPercent = newMaxPerCent
+        }
+        
+        percentDict["maxPercent"] = maxPercent
+        NSUserDefaults.standardUserDefaults().setObject(percentDict, forKey: "percentDict")
+        
+        percentDict["minPercent"] = minPercent
+        NSUserDefaults.standardUserDefaults().setObject(percentDict, forKey: "percentDict")
+        
     }
+    
+
 
 }
