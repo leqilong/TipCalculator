@@ -55,7 +55,7 @@ class SettingsViewController: UIViewController{
     }
     
     func configureUI(){
-        self.view.backgroundColor = UIColor(red:0.78, green:0.90, blue:0.85, alpha:1.0)
+        self.view.backgroundColor = UIColor(red:0.34, green:0.38, blue:0.44, alpha:1.0)
         rangeSlider.addTarget(self, action: "rangeSliderValueChanged:", forControlEvents: .ValueChanged)
         
         percentageSettingLabel.text = "Minimum Tip Percentage: \(Int((rangeSlider.lowerValue) * 100)) %"

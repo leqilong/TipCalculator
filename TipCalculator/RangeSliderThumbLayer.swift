@@ -26,7 +26,7 @@ class RangeSliderThumbLayer: CALayer {
             //Fill - with a subtle shadow
             let shadowColor = UIColor.grayColor()
             CGContextSetShadowWithColor(ctx, CGSize(width: 0.0, height: 1.0), 1.0, shadowColor.CGColor)
-            CGContextSetFillColorWithColor(ctx, shadowColor.CGColor)
+            CGContextSetFillColorWithColor(ctx, UIColor(red:0.88, green:0.89, blue:0.85, alpha:1.0).CGColor)
             CGContextAddPath(ctx, thumbPath.CGPath)
             CGContextFillPath(ctx)
             

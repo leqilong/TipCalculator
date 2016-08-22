@@ -47,7 +47,7 @@ class CalculatorViewController: UIViewController, SliderViewDelegate, UITextFiel
         refresh()
         
         if let sliderViewFrameY = NSUserDefaults.standardUserDefaults().valueForKey("sliderViewHeight") as? CGFloat{
-            let sliderView = SliderView (origin: CGPointMake(0.0, /*self.view.frame.maxY - sliderViewFrameY - 150.00*/sliderViewFrameY), height: 50.0, width: self.view.frame.maxX)
+            let sliderView = SliderView (origin: CGPointMake(0.0, sliderViewFrameY), height: 50.0, width: self.view.frame.maxX)
             sliderView.delegate = self
             self.view.addSubview(sliderView)
         }else{
@@ -127,7 +127,7 @@ class CalculatorViewController: UIViewController, SliderViewDelegate, UITextFiel
     func refresh(){
         
         let colors = Colors(percent: CGFloat(percent))
-
+        print("percent in refresh() is \(percent)!")
         view.backgroundColor = UIColor.clearColor()
         var backgroundLayer = colors.gl
         backgroundLayer.frame = view.frame

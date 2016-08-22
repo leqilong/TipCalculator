@@ -29,7 +29,6 @@ class SliderView: UIView{
     var percent: CGFloat = 0{
         didSet{
             percent = min(max(percent, minPercent), maxPercent)
-            print("percent is \(percent)")
             percentageLabel.text = "\(Int(percent))%"
             delegate?.updateLabel(percent, currentFrameOriginYOnSuperView: currrentFrameOriginYOnSuperView)
             currentPercent = percent
@@ -47,6 +46,8 @@ class SliderView: UIView{
     var backgroundColorPercent: CGFloat = 0{
         didSet{
             backgroundColorPercent = min(max(backgroundColorPercent, 0), 75)
+            updateBackgroundColor()
+            NSUserDefaults.standardUserDefaults().setValue(backgroundColorPercent, forKey: "backgroundPercent")
         }
     }
 
@@ -62,6 +63,7 @@ class SliderView: UIView{
         percentageLabel.backgroundColor = UIColor.clearColor()
         percentageLabel.textColor = UIColor.whiteColor()
         percentageLabel.textAlignment = NSTextAlignment.Center
+        percentageLabel.font = UIFont(name: "AmericanTypewriter-Bold", size: 22)
         
         if let percentDictionary = NSUserDefaults.standardUserDefaults().objectForKey("percentDict") as? [String:AnyObject]{
             if let max = percentDictionary["maxPercent"] as? CGFloat{
@@ -82,6 +84,14 @@ class SliderView: UIView{
             NSUserDefaults.standardUserDefaults().setValue(currentPercent, forKey: "currentPercent")
             print("This is the first launch ever!")
         }
+        
+        if let backgroundPercent = NSUserDefaults.standardUserDefaults().valueForKey("backgroundPercent") as? CGFloat{
+            backgroundColorPercent = backgroundPercent
+        }else{
+            NSUserDefaults.standardUserDefaults().setValue(backgroundColorPercent, forKey: "currentPercent")
+            print("This is the first launch ever!")
+        }
+
         
         percentageLabel.text = "\(Int(percent))%"
         self.addSubview(percentageLabel)
@@ -120,14 +130,11 @@ class SliderView: UIView{
         self.frame.origin = CGPointMake(self.frame.origin.x, max(min(self.frame.origin.y + location.y, (self.superview!.bounds.size.height - self.frame.height)), self.superview!.frame.origin.y))
         
         currrentFrameOriginYOnSuperView = self.frame.origin.y
-        print("currrentFrameOriginYOnSuperView is \(currrentFrameOriginYOnSuperView)!!!!")
         
         let heightChange = -location.y
         if heightChange != 0{
-            print("translation.y is \(location.y)")
             percent = percent + (heightChange * ((maxPercent - minPercent)/100) / 5)
             backgroundColorPercent = backgroundColorPercent + (heightChange / (((100 - (maxPercent - minPercent))/25)+6))
-            print("HeightChange is \(heightChange/(((100 - (maxPercent - minPercent))/25)+6))!!!!!")
             updateBackgroundColor()
             delegate?.updateLabel(percent, currentFrameOriginYOnSuperView: currrentFrameOriginYOnSuperView)
         }
