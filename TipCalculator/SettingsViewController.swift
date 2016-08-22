@@ -13,6 +13,7 @@ class SettingsViewController: UIViewController{
     
     //MARK: -Outlets
     @IBOutlet weak var percentageSettingLabel: UILabel!
+    @IBOutlet weak var maxPercentageSettingLabel: UILabel!
     
     //MARK: -Properties
     let rangeSlider = RangeSlider(frame: CGRectZero)
@@ -21,7 +22,7 @@ class SettingsViewController: UIViewController{
     var totalAmount: Float?
     var tipAmount: Float?
     var partySize: Int?
-    var individualAmount: Int?
+    var individualAmount: Float?
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -57,12 +58,15 @@ class SettingsViewController: UIViewController{
         self.view.backgroundColor = UIColor(red:0.78, green:0.90, blue:0.85, alpha:1.0)
         rangeSlider.addTarget(self, action: "rangeSliderValueChanged:", forControlEvents: .ValueChanged)
         
-        percentageSettingLabel.text = "Min Tip Percentage: \(Int((rangeSlider.lowerValue) * 100)) % Max Tip Percentage: \(Int((rangeSlider.upperValue) * 100)) %"
+        percentageSettingLabel.text = "Minimum Tip Percentage: \(Int((rangeSlider.lowerValue) * 100)) %"
+        
+        maxPercentageSettingLabel.text = "Maximum Tip Percentage: \(Int((rangeSlider.upperValue) * 100)) %"
     }
     
     func rangeSliderValueChanged(rangeSlider: RangeSlider) {
-        percentageSettingLabel.text = "Min Tip Percentage: \(Int((rangeSlider.lowerValue) * 100)) % Max Tip Percentage: \(Int((rangeSlider.upperValue) * 100)) %"
+        percentageSettingLabel.text = "Minimum Tip Percentage: \(Int((rangeSlider.lowerValue) * 100)) %"
         
+        maxPercentageSettingLabel.text = "Maximum Tip Percentage: \(Int((rangeSlider.upperValue) * 100)) %"
         NSNotificationCenter.defaultCenter().postNotificationName("userSetMinMaxPercentChanged", object: nil, userInfo: ["lowerValue": ((rangeSlider.lowerValue) * 100), "upperValue": ((rangeSlider.upperValue) * 100)])
         
         NSUserDefaults.standardUserDefaults().setValue(rangeSlider.lowerValue, forKey: "lowerValue")
@@ -72,12 +76,28 @@ class SettingsViewController: UIViewController{
 
     @IBAction func shareResults(sender: AnyObject) {
         
-        let messageToSend = "Test Message"
-        
-        let activityViewController = UIActivityViewController(activityItems: [messageToSend], applicationActivities: nil)
-        
-        self.presentViewController(activityViewController, animated: true, completion: nil)
-
+        if hasResult{
+            if let totalAmount = totalAmount,
+                let tipAmount = tipAmount,
+                let partySize = partySize,
+                let individualAmount = individualAmount{
+                
+                let totalAmountString = String(format: "%0.2f", arguments:[totalAmount])
+                let tipAmountString = String(format: "%0.2f", arguments:[tipAmount])
+                let individualAmountString = String(format: "%0.2f", arguments:[individualAmount])
+                
+                let messageToSend = "Hello! The total bill comes to " + totalAmountString + ", including tip " + tipAmountString + ". With it splitting between \(partySize) people, each person pays " + individualAmountString + ". Thank you!"
+                
+                let activityViewController = UIActivityViewController(activityItems: [messageToSend], applicationActivities: nil)
+                
+                self.presentViewController(activityViewController, animated: true, completion: nil)
+            }
+            
+        }else{
+            let alert = UIAlertController(title: "Share Results", message: "No results to share at this moment yet", preferredStyle: .Alert)
+            alert.addAction(UIAlertAction(title: "Dismiss", style: .Default, handler: nil))
+            self.presentViewController(alert, animated: true, completion: nil)
+        }
         
     }
 }

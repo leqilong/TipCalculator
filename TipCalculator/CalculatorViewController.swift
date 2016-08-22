@@ -164,6 +164,14 @@ class CalculatorViewController: UIViewController, SliderViewDelegate, UITextFiel
         let settingsVC = segue.destinationViewController as! SettingsViewController
         
         settingsVC.transitioningDelegate = self.transitionManager
+        
+        if billTextField.text != ""{
+            settingsVC.hasResult = true
+            settingsVC.totalAmount = ((totalBillLabel.text)! as NSString).floatValue
+            settingsVC.individualAmount = ((amountPerPersonLabel.text)! as NSString).floatValue
+            settingsVC.partySize = ((peopleAmountTextField.text)! as NSString).integerValue
+            settingsVC.tipAmount = ((totalTipLabel.text)! as NSString).floatValue
+        }
     }
     
     @IBAction func unwindToViewController (sender: UIStoryboardSegue){
