@@ -45,7 +45,7 @@ class SliderView: UIView{
     
     var backgroundColorPercent: CGFloat = 0{
         didSet{
-            backgroundColorPercent = min(max(backgroundColorPercent, 0), 75)
+            backgroundColorPercent = min(max(backgroundColorPercent, 0), 100)
             updateBackgroundColor()
             NSUserDefaults.standardUserDefaults().setValue(backgroundColorPercent, forKey: "backgroundPercent")
         }

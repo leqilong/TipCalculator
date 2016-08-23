@@ -88,9 +88,11 @@ class SettingsViewController: UIViewController{
                 
                 let messageToSend = "Hello! The total bill comes to " + totalAmountString + ", including tip " + tipAmountString + ". With it splitting between \(partySize) people, each person pays " + individualAmountString + ". Thank you!"
                 
-                let activityViewController = UIActivityViewController(activityItems: [messageToSend], applicationActivities: nil)
-                
-                self.presentViewController(activityViewController, animated: true, completion: nil)
+                dispatch_async(dispatch_get_main_queue()){
+                    let activityViewController = UIActivityViewController(activityItems: [messageToSend], applicationActivities: nil)
+                    
+                    self.presentViewController(activityViewController, animated: true, completion: nil)
+                }
             }
             
         }else{

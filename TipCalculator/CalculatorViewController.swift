@@ -84,6 +84,10 @@ class CalculatorViewController: UIViewController, SliderViewDelegate, UITextFiel
     
     func configureUI(){
         calculateTip()
+        billTextField.keyboardType = UIKeyboardType.DecimalPad
+        peopleAmountTextField.keyboardType = UIKeyboardType.DecimalPad
+        let tap: UITapGestureRecognizer = UITapGestureRecognizer(target: self, action: Selector("dismissKeyboard"))
+        view.addGestureRecognizer(tap)
     }
     
     func calculateTip(){
@@ -101,6 +105,9 @@ class CalculatorViewController: UIViewController, SliderViewDelegate, UITextFiel
 
     }
     
+    func dismissKeyboard(){
+        view.endEditing(true)
+    }
     func updateLabel(percent: CGFloat?, currentFrameOriginYOnSuperView: CGFloat?) {
         if let percent = percent{
             self.percent = Float(percent)
